@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { HashRouter, Link, Route, Routes, useLocation } from 'react-router-dom'
 import { StoreProvider } from './app/store'
+import { ErrorBoundary } from './app/ErrorBoundary'
 import { ToastProvider } from './components/ui'
 import { Header, MobileNav } from './components/Header'
 import { HomePage } from './pages/HomePage'
@@ -84,7 +85,9 @@ export default function App() {
     <StoreProvider>
       <ToastProvider>
         <HashRouter>
-          <Layout />
+          <ErrorBoundary>
+            <Layout />
+          </ErrorBoundary>
         </HashRouter>
       </ToastProvider>
     </StoreProvider>
