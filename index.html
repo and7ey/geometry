@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="ru" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="description"
+      content="GeoMaster — учебник-тренажёр по геометрии 7–8 класса: определения, свойства, признаки, теоремы, карточки, тесты и интервальное повторение."
+    />
+    <link rel="icon" type="image/svg+xml" href="/geometry/favicon.svg" />
+    <link rel="manifest" href="/geometry/manifest.webmanifest" />
+    <title>GeoMaster — геометрия 7–8</title>
+    <script>
+      (function () {
+        try {
+          var raw = localStorage.getItem('geomaster.v1');
+          var theme = raw ? (JSON.parse(raw).settings || {}).theme : 'system';
+          var dark =
+            theme === 'dark' ||
+            ((!theme || theme === 'system') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+        } catch (e) {
+          document.documentElement.dataset.theme = 'light';
+        }
+      })();
+    </script>
+    <script type="module" crossorigin src="/geometry/assets/index-BZa25CrC.js"></script>
+    <link rel="stylesheet" crossorigin href="/geometry/assets/index-Dp6sXPPb.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

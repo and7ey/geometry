@@ -1,0 +1,19 @@
+{
+  "name": "GeoMaster — геометрия 7–8",
+  "short_name": "GeoMaster",
+  "description": "Учебник-тренажёр по геометрии 7–8 класса",
+  "lang": "ru",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f3ec",
+  "theme_color": "#3446c9",
+  "icons": [
+    {
+      "src": "./favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
