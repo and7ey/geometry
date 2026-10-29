@@ -12,7 +12,7 @@ import type {
 } from '../../types'
 import { selectItems, type StudyFilters } from '../filters'
 import { buildQuestions } from '../quiz/generate'
-import { hashSeed } from '../quiz/random'
+import { balancedSample, hashSeed, mulberry32 } from '../quiz/random'
 
 export function filtersFromSettings(settings: Settings): StudyFilters {
   return {
@@ -96,7 +96,9 @@ export function createSession(
   let questions: Question[] = []
 
   if (kind === 'study' || kind === 'flashcards') {
-    const list = kind === 'study' || count === 'all' ? selected : selected.slice(0, count)
+    const rng = mulberry32(hashSeed(seed))
+    const wanted = kind === 'study' || count === 'all' ? selected.length : count
+    const list = balancedSample(selected, wanted, (item) => item.topicId, rng)
     itemIds = list.map((item) => item.id)
   } else {
     const generated = buildQuestions(kind, {

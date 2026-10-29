@@ -11,7 +11,7 @@ import type {
 } from '../../types'
 import { isDue, isMastered, weakScore } from '../scheduling'
 import { makeNumericQuestion, NUMERIC_TEMPLATES } from './numeric'
-import { hashSeed, mulberry32, sample, shuffle, uniqueTexts, type Rng } from './random'
+import { balancedSample, hashSeed, mulberry32, sample, shuffle, uniqueTexts, type Rng } from './random'
 import { makeRecallQuestion } from './recall'
 
 type Direction = 'term' | 'statement' | 'conclusion'
@@ -182,7 +182,7 @@ export function generateQuizQuestions(input: GenerateQuizInput): Question[] {
     input.skills && input.skills.length > 0
       ? 0
       : Math.max(1, target - curatedForTarget.length)
-  const chosenItems = shuffle(eligible, rng).slice(0, Math.min(eligible.length, itemShare))
+  const chosenItems = balancedSample(eligible, itemShare, (item) => item.topicId, rng)
   const chosenSet = new Set(chosenItems.map((item) => item.id))
 
   for (const item of chosenItems) {
@@ -208,7 +208,7 @@ export function generateQuizQuestions(input: GenerateQuizInput): Question[] {
     add(prepareAuthored(drill, rng))
   }
 
-  for (const drill of shuffle(authoredPool, rng)) {
+  for (const drill of balancedSample(authoredPool, authoredPool.length, (item) => item.topicId, rng)) {
     if (questions.length >= target) break
     add(prepareAuthored(drill, rng))
   }
@@ -233,8 +233,10 @@ export function generateQuizQuestions(input: GenerateQuizInput): Question[] {
   }
 
   if (questions.length < target) {
-    const rest = shuffle(
+    const rest = balancedSample(
       eligible.filter((item) => !chosenSet.has(item.id)),
+      eligible.length,
+      (item) => item.topicId,
       rng,
     )
     for (const item of rest) {
@@ -255,9 +257,10 @@ export function generateRecallQuestions(
   seed: string,
 ): Question[] {
   const rng = mulberry32(hashSeed(seed))
-  const chosen = shuffle(items, rng)
-  const target = count === 'all' ? chosen.length : Math.min(count, chosen.length)
-  return chosen.slice(0, target).map((item) => makeRecallQuestion(item))
+  const target = count === 'all' ? items.length : Math.min(count, items.length)
+  return balancedSample(items, target, (item) => item.topicId, rng).map((item) =>
+    makeRecallQuestion(item),
+  )
 }
 
 export function generateReviewQuestions(input: GenerateReviewInput): Question[] {
